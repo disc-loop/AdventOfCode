@@ -7,16 +7,19 @@
 #define DIAL_START 50
 #define DIAL_END 100
 
-char *filename;
-FILE *file;
-char buf[BUFFER_SIZE];
-int linesRead = 0;
-int zeros = 0;
-int dial = DIAL_START;
-
 int valid(char buf[BUFFER_SIZE]);
+int rotate(int, int);
+int count_zeroes(int, int);
 
 int main (int argc, char **argv) {
+  char *filename;
+  FILE *file;
+  char buf[BUFFER_SIZE];
+  int linesRead = 0;
+  int zeros = 0;
+  int dial = DIAL_START;
+  int rotations = 0;
+
   if (argc != 2) {
     fprintf(stderr, "Expected 1 arg\n");
     return EXIT_FAILURE;
@@ -31,26 +34,25 @@ int main (int argc, char **argv) {
 
   while (fgets(buf, BUFFER_SIZE, file) != NULL) {
     linesRead++;
+    printf("Dial: %d\n", dial);
 
     if (!valid(buf)) {
-      fprintf(stderr, "Invalid command on line %d\n", linesRead);
+      fprintf(stderr, "Invalid command on line %d: '%s'\n", linesRead, buf);
       return EXIT_FAILURE;
     }
+    rotations = buf[0] == 'L' ? -atoi(&buf[1]) : atoi(&buf[1]);
 
-    if (buf[0] == 'L') {
-      printf("Command: L%d\n", atoi(&buf[1]));
-      dial = (dial - atoi(&buf[1])) % DIAL_END;
-      if (dial < 0) {
-        dial = DIAL_END + dial;
-      }
-    } else {
-      printf("Command: R%d\n", atoi(&buf[1]));
-      dial = (dial + atoi(&buf[1])) % DIAL_END;
-    }
-    printf("Dial: %d\n", dial);
-    if (dial == 0) {
+    printf("Command: %s", buf);
+    zeros += 1 * (abs(rotations) / DIAL_END);
+    if (dial != 0 && (dial + (rotations % DIAL_END) < 1 || dial + (rotations % DIAL_END) > DIAL_END - 1)) {
       zeros++;
     }
+    dial = rotate(dial, rotations);
+    dial = (dial + rotations) % DIAL_END;
+    if (dial < 0) {
+      dial = DIAL_END + dial;
+    }
+    printf("Zeros: %d\n\n", zeros);
   }
   fclose(file);
 

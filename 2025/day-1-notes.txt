@@ -1,0 +1,64 @@
+[Part 1]
+
+Main:
+  Let count = 0, dial = 50, dial end = 100
+  Read file
+  For each command in file:
+    Shift dial
+    If dial = 0, count += 1
+
+Shift dial:
+  L?
+    (dial - rotations) % dial end
+    If dial < 0
+      Dial = dial end + dial
+  R?
+    (dial + rotations) % dial end
+
+
+[Part 2]
+
+Thoughts:
+  Dial: 50, R1000, Dial': 50, Zeros: 10
+    Seems like I could do abs(rotations) / dial end to get the zeros
+      Dial: 50, L30, Dial': 20, Zeros: 30 / 100 = 0
+        True
+      Dial: 50, L50, Dial': 0, Zeros: 50 / 100 = 0
+        False
+  What about dial + abs(rotations) / dial end?
+    Dial: 50, L30, Dial': 20, Zeros: 50 + 30 / 100 = 0
+      True
+    Dial: 50, L50, Dial': 0, Zeros: 50 + 50 / 100 = 1
+      True
+    Dial: 50, R50, Dial': 0, Zeros: 50 + 50 / 100 = 1
+      True
+    Dial: 50, R1000, Dial': 50, Zeros: 1000 + 50 / 100 = 10
+      True
+    Dial: 20, L20, Dial': 0, Zeros: 20 + 20 / 100 = 0
+      False
+  I think I can just do dial + abs(rotations) / dial end if abs(rotations) is larger than dial end, otherwise if rotations isn't 0, check if dial is 0 and add 1 to the total.
+    Nope
+
+Tests:
+  Dial: 2
+  Command: R86
+  Dial + rotations / dial end: 1
+  Zeros: 7523
+
+
+Main:
+  Let count = 0, dial = 50, dial end = 100
+  Read file
+  For each command in file:
+    If dial + abs(rotations) > dial end:
+      count += abs(rotations) / dial end
+    Shift dial
+    If dial = 0 && rotations != 0, count += 1
+
+Shift dial:
+  L?
+    (dial - rotations) % dial end
+    If dial < 0
+      Dial = dial end + dial
+  R?
+    (dial + rotations) % dial end
