@@ -1,18 +1,28 @@
 Main:
-- Let count = 0
-- Read file
-- Read ranges
-- Generate IDs
-- For each ID in IDs
-  - If ID is invalid, count = count + invalid ID
-- Return count
+  Let count = 0
+  Read file
+  Read ranges
+  Generate IDs
+  For each ID in IDs
+    If ID is invalid, count = count + invalid ID
+  Return count
 
 Generate IDs:
-- For range of first number to second number (inclusive)
-  - Add to list of IDs
+  For range of first number to second number (inclusive)
+    Add to list of IDs
 
 Invalid:
-- Skip IDs of odd lengths as it's not possible for them to be repeats
-- Loop through first half and second half at the same time
-  - If the chars at that pos don't match, return false
-- Return true
+  Skip IDs of odd lengths as it's not possible for them to be repeats
+  Loop through first half and second half at the same time
+    If the chars at that pos don't match, return false
+  Return true
+
+Is Invalid:
+  For n = 1, till n == length of ID / 2, n++
+    If string length mod n == 0
+      Split string into n segments
+      For each segment
+        If not equal to first segment
+          Break
+      Return true
+  Return false
